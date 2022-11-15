@@ -1,16 +1,18 @@
-package com.kodilla.stream.immutable;
+package com.kodilla.stream.book;
 
 public class Book {
 
     private final String title;
     private final String author;
     private final int yearOfPublication;
+    private final String signature;
 
     public Book(final String title, final String author,
-                final int yearOfPublication) {
+                final int yearOfPublication, String signature) {
         this.title = title;
         this.author = author;
         this.yearOfPublication = yearOfPublication;
+        this.signature = signature;
     }
 
     public String getTitle() {
@@ -23,6 +25,20 @@ public class Book {
 
     public int getYearOfPublication() {
         return yearOfPublication;
+    }
+
+    public String getSignature() {
+        return signature;
+    }
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", yearOfPublication=" + yearOfPublication +
+                ", signature='" + signature + '\'' +
+                '}';
     }
 
     //public void modifyYearOfPublication(int year) {

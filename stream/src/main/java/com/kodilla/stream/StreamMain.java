@@ -1,69 +1,46 @@
 package com.kodilla.stream;
 
-import com.kodilla.stream.beautifier.PoemBeautifier;
-import com.kodilla.stream.iterate.NumbersGenerator;
-import com.kodilla.stream.lambda.*;
-import com.kodilla.stream.reference.FunctionalCalculator;
+import com.kodilla.stream.book.Book;
+import com.kodilla.stream.book.BookDirectory;
+import com.kodilla.stream.person.People;
 
-import static java.lang.Character.*;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 
 public class StreamMain {
     public static void main (String[] args){
         System.out.println("Welcome to module 7 - Stream");
 
-        SaySomething saySomething = new SaySomething();
-        saySomething.say();
+        People.getList().stream()
+                .map(String::toUpperCase)
+                .filter(s -> s.length() > 11)
+                .map(s -> s.substring(0, s.indexOf(' ') + 2) + ".")
+                .filter(s -> s.charAt(0) == 'M')
+                .forEach(System.out::println);
 
-        Processor processor = new Processor();
-        ExecuteSaySomething executeSaySomething = new ExecuteSaySomething();
-        processor.execute(executeSaySomething);
+        BookDirectory theBookDirectory = new BookDirectory();
+        List<Book> theResultListOfBooks = theBookDirectory.getList().stream()
+                .filter(book -> book.getYearOfPublication() > 2005).toList();
 
-        Executor codeToExecute = () -> System.out.println("This is an example text.");
-        processor.execute(codeToExecute);
-        processor.execute(()->System.out.println("This is an example text."));
+        System.out.println("# Elements: " + theResultListOfBooks.size());
+        theResultListOfBooks
+                .forEach(System.out::println);
 
-        ExpressionExecutor expressionExecutor = new ExpressionExecutor();
+        Map<String, Book> theResultMapOfBooks = theBookDirectory.getList().stream()
+                .filter(book -> book.getYearOfPublication() > 2005).collect(Collectors.toMap(Book::getSignature, book -> book));
 
-        System.out.println("Calculate expressions with lambdas");
-        expressionExecutor.executeExpression(10,5, (a, b) -> a + b);
-        expressionExecutor.executeExpression(10,5, (a, b) -> a - b);
-        expressionExecutor.executeExpression(10,5, (a, b) -> a * b);
-        expressionExecutor.executeExpression(10,5, (a, b) -> a / b);
+        System.out.println("# Elements: " + theResultMapOfBooks.size());
+        theResultMapOfBooks.entrySet().stream()
+                .map(entry -> entry.getKey() + ": " + entry.getValue())
+                .forEach(System.out::println);
 
-        System.out.println("Calculate expressions with method references");
-        expressionExecutor.executeExpression(3,4, FunctionalCalculator::addAToB);
-        expressionExecutor.executeExpression(3,4, FunctionalCalculator::subBFromA);
-        expressionExecutor.executeExpression(3,4, FunctionalCalculator::multiplyAByB);
-        expressionExecutor.executeExpression(3,4, FunctionalCalculator::divideAByB);
+        String theResultStringOfBooks = theBookDirectory.getList().stream()
+                .filter(book -> book.getYearOfPublication() > 2005)
+                .map(Book::toString)
+                .collect(Collectors.joining(",\n", "<<", ">>"));
 
-        PoemBeautifier poemBeautifier = new PoemBeautifier();
-        poemBeautifier.beautify("test text", (s) -> "ABC" + s + "ABC");
-        poemBeautifier.beautify("test text", String::toUpperCase);
-        poemBeautifier.beautify("test text", (s) -> s.replace(' ', '*'));
-        poemBeautifier.beautify("test text", (s) -> {
-            char[] textArray = s.toCharArray();
-            for(int i=0; i< textArray.length-1; i++) {
-                if (i % 2 == 0) {
-                    if (!isLetter(textArray[i])) {
-                        continue;
-                    }
-                    if (isLowerCase(textArray[i])) {
-                        textArray[i] = toUpperCase(textArray[i]);
-                    }
-                } else {
-                    if (!isLetter(textArray[i])) {
-                        continue;
-                    }
-                    if (isUpperCase(textArray[i])) {
-                        textArray[i] = toLowerCase(textArray[i]);
-                    }
-                }
-            }
-            s = String.valueOf(textArray);
-            return s;
-        });
-
-        System.out.println("Using Stream to generate even numbers from 1 to 20");
-        NumbersGenerator.generateEven(20);
+        System.out.println(theResultStringOfBooks);
     }
 }
