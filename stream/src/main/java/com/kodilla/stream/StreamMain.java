@@ -1,7 +1,10 @@
 package com.kodilla.stream;
 
+import com.kodilla.stream.beautifier.PoemBeautifier;
 import com.kodilla.stream.lambda.*;
 import com.kodilla.stream.reference.FunctionalCalculator;
+
+import static java.lang.Character.*;
 
 public class StreamMain {
     public static void main (String[] args){
@@ -31,5 +34,32 @@ public class StreamMain {
         expressionExecutor.executeExpression(3,4, FunctionalCalculator::subBFromA);
         expressionExecutor.executeExpression(3,4, FunctionalCalculator::multiplyAByB);
         expressionExecutor.executeExpression(3,4, FunctionalCalculator::divideAByB);
+
+        PoemBeautifier poemBeautifier = new PoemBeautifier();
+        poemBeautifier.beautify("test text", (s) -> "ABC" + s + "ABC");
+        poemBeautifier.beautify("test text", String::toUpperCase);
+        poemBeautifier.beautify("test text", (s) -> s.replace(' ', '*'));
+        poemBeautifier.beautify("test text", (s) -> {
+            char[] textArray = s.toCharArray();
+            for(int i=0; i< textArray.length-1; i++) {
+                if (i % 2 == 0) {
+                    if (!isLetter(textArray[i])) {
+                        continue;
+                    }
+                    if (isLowerCase(textArray[i])) {
+                        textArray[i] = toUpperCase(textArray[i]);
+                    }
+                } else {
+                    if (!isLetter(textArray[i])) {
+                        continue;
+                    }
+                    if (isUpperCase(textArray[i])) {
+                        textArray[i] = toLowerCase(textArray[i]);
+                    }
+                }
+            }
+            s = String.valueOf(textArray);
+            return s;
+        });
     }
 }
