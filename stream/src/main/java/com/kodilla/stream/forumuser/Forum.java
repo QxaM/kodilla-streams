@@ -18,6 +18,8 @@ public final class Forum {
         userList.add(new ForumUser(8, "user8", 'M', LocalDate.of(1997, 2, 5), 0));
         userList.add(new ForumUser(9, "user9", 'F', LocalDate.of(2003, 1, 4), 12));
         userList.add(new ForumUser(10, "user10", 'F', LocalDate.of(1994, 12, 31), 25));
+        userList.add(new ForumUser(11, "user11", 'M', LocalDate.of(2002, 11, 25), 1));
+        userList.add(new ForumUser(12, "user12", 'M', LocalDate.of(2002, 11, 10), 1));
     }
 
     public List<ForumUser> getUserList() {
