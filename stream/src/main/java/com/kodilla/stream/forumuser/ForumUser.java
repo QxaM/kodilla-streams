@@ -1,51 +1,71 @@
 package com.kodilla.stream.forumuser;
 
-import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public final class ForumUser {
-
-    private final int userID;
     private final String username;
-    private final char gender;
-    private final LocalDate birthDate;
-    private final int postCount;
+    private final String realName;
+    private final String location;
+    private final Set<ForumUser> friends = new HashSet<>();
 
-    public ForumUser(int userID, String username, char gender, LocalDate birthDate, int postCount) {
-        this.userID = userID;
+    public ForumUser(String username, String realName, String location) {
         this.username = username;
-        this.gender = gender;
-        this.birthDate = birthDate;
-        this.postCount = postCount;
+        this.realName = realName;
+        this.location = location;
     }
 
-    public int getUserID() {
-        return userID;
+    public void addFriend(ForumUser user){
+        friends.add(user);
+    }
+
+    public boolean removeFriend(ForumUser user){
+        return friends.remove(user);
+    }
+
+    public Set<String> getLocationsOfFriends(){
+        return friends.stream()
+                .map(ForumUser::getLocation)
+                .collect(Collectors.toSet());
     }
 
     public String getUsername() {
         return username;
     }
 
-    public char getGender() {
-        return gender;
+    public String getRealName() {
+        return realName;
     }
 
-    public LocalDate getBirthDate() {
-        return birthDate;
+    public String getLocation() {
+        return location;
     }
 
-    public int getPostCount() {
-        return postCount;
+    public Set<ForumUser> getFriends() {
+        return friends;
     }
 
     @Override
     public String toString() {
         return "ForumUser{" +
-                "userID=" + userID +
-                ", username='" + username + '\'' +
-                ", gender=" + gender +
-                ", birthDate=" + birthDate +
-                ", postCount=" + postCount +
+                "username='" + username + '\'' +
+                ", realName='" + realName + '\'' +
+                ", location='" + location + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ForumUser forumUser = (ForumUser) o;
+        return username.equals(forumUser.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username);
     }
 }
