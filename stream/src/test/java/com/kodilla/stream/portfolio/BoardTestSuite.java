@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.time.temporal.ChronoUnit.DAYS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class BoardTestSuite {
@@ -75,6 +76,51 @@ public class BoardTestSuite {
 
         //Then
         assertEquals(2, longTasks);
+    }
+
+    @Test
+    void testAddTaskListAverageWorkingOnTask(){
+        //Given
+        Board project = prepareTestData();
+
+        //When
+        List<TaskList> inProgressTasks = new ArrayList<>();
+        inProgressTasks.add(new TaskList("In progress"));
+        var projectsCount = project.getTaskLists().stream()
+                .filter(inProgressTasks::contains)
+                .mapToLong(tl -> tl.getTasks().size())
+                .sum();
+
+        var sumOfWorkDays = project.getTaskLists().stream()
+                .filter(inProgressTasks::contains)
+                .flatMap(tl -> tl.getTasks().stream())
+                .map(Task::getCreated)
+                .map(ld -> DAYS.between(ld, LocalDate.now()))
+                .reduce( 0L, (sum, current) -> sum += current);
+
+        double averageWorkDays = (double) sumOfWorkDays / projectsCount;
+
+        //Then
+        assertEquals(10.0, averageWorkDays);
+    }
+
+    @Test
+    void testAddTaskListAverageWorkingOnTaskWithAverage(){
+        //Given
+        Board project = prepareTestData();
+
+        //When
+        List<TaskList> inProgressTasks = new ArrayList<>();
+        inProgressTasks.add(new TaskList("In progress"));
+        double averageWorkDays = project.getTaskLists().stream()
+                .filter(inProgressTasks::contains)
+                .flatMap(tl -> tl.getTasks().stream())
+                .map(Task::getCreated)
+                .mapToDouble(ld -> DAYS.between(ld, LocalDate.now()))
+                .average().orElse(0.0);
+
+        //Then
+        assertEquals(10.0, averageWorkDays);
     }
 
     private Board prepareTestData(){
